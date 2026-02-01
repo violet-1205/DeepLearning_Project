@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom global styles */
+body {
+    background-color: #f5f5f4; /* Stone-100: Warmer, earthier background */
+    color: #44403c; /* Stone-700: Softer contrast than black */
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+}
+
+.dropdown-menu {
+    transition: opacity 0.1s ease-out, transform 0.1s ease-out;
+}
