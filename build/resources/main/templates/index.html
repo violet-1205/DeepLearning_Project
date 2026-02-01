@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <script th:src="@{/js/ui.js}" defer></script>
+</head>
+<body class="flex flex-col min-h-screen bg-stone-100 dark:bg-black text-stone-700 dark:text-stone-300 transition-colors duration-200">
+
+    <!-- Top Header -->
+    <div th:replace="~{layout/top :: nav}"></div>
+    
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <div class="bg-[#fafaf9] dark:bg-stone-900 border border-stone-200 dark:border-stone-800 overflow-hidden shadow-sm rounded-lg p-6 transition-colors duration-200">
+            <h1 class="text-3xl font-bold text-stone-800 dark:text-stone-100 mb-4">Hello World</h1>
+            <p class="text-stone-600 dark:text-stone-400">
+                스프링 부트와 Tailwind CSS로 구성된 메인 페이지입니다.
+                <br>눈의 피로를 줄이기 위해 따뜻한 Stone 계열의 색상을 적용했습니다.
+            </p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{layout/footer :: footer}"></div>
+    
+</body>
+</html>
