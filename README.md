@@ -20,7 +20,7 @@
 - **기능**: 꽃받침(Sepal)과 꽃잎(Petal)의 길이/너비를 기반으로 붓꽃의 품종(Setosa, Versicolor, Virginica)을 분류합니다.
 - **기술**: 다중 분류(Multi-class Classification), One-Hot Encoding.
 
-## 🛠 기술 스택 (Tech Stack)
+## �🛠 기술 스택 (Tech Stack)
 
 ### 🖥️ Backend & Frontend
 - **Language**: Java 17
@@ -89,4 +89,8 @@ springboot/
      ```
    - 접속: `http://localhost:1111`
 
+<<<<<<< HEAD
 ---
+=======
+---
+>>>>>>> 9e94f966dd2885331b8acc50a776678d743fc92a
