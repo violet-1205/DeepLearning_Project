@@ -88,9 +88,3 @@ springboot/
      ./gradlew bootRun
      ```
    - 접속: `http://localhost:1111`
-
-<<<<<<< HEAD
----
-=======
----
->>>>>>> 9e94f966dd2885331b8acc50a776678d743fc92a
