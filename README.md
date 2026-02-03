@@ -20,7 +20,7 @@
 - **기능**: 꽃받침(Sepal)과 꽃잎(Petal)의 길이/너비를 기반으로 붓꽃의 품종(Setosa, Versicolor, Virginica)을 분류합니다.
 - **기술**: 다중 분류(Multi-class Classification), One-Hot Encoding.
 
-### 3. 🫁 폐암 수술 후 생존 예측 (Lung Cancer Survival Prediction)
+### 3. � 폐암 수술 후 생존 예측 (Lung Cancer Survival Prediction)
 - **데이터셋**: Thoraric Surgery Dataset
 - **기능**: 환자의 진단명, 폐활량, 흡연 여부 등 16가지 의료 데이터를 분석하여 수술 후 생존 가능성을 예측합니다.
 - **기술**: Keras Sequential 모델, 이진 분류(Binary Classification).
