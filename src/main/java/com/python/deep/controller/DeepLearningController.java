@@ -226,4 +226,114 @@ public class DeepLearningController {
 
         return "deep/diabetes";
     }
+
+    @GetMapping("/deep/lung")
+    public String lungForm() {
+        return "deep/lung";
+    }
+
+    @PostMapping("/deep/lung/predict")
+    public String lungPredict(
+            @RequestParam("attr1") double attr1,
+            @RequestParam("attr2") double attr2,
+            @RequestParam("attr3") double attr3,
+            @RequestParam("attr4") double attr4,
+            @RequestParam("attr5") double attr5,
+            @RequestParam("attr6") double attr6,
+            @RequestParam("attr7") double attr7,
+            @RequestParam("attr8") double attr8,
+            @RequestParam("attr9") double attr9,
+            @RequestParam("attr10") double attr10,
+            @RequestParam("attr11") double attr11,
+            @RequestParam("attr12") double attr12,
+            @RequestParam("attr13") double attr13,
+            @RequestParam("attr14") double attr14,
+            @RequestParam("attr15") double attr15,
+            @RequestParam("attr16") double attr16,
+            Model model) {
+
+        try {
+            // Python script path
+            String pythonScriptPath = "lung_deep.py";
+            
+            // Prepare command arguments
+            List<String> command = new ArrayList<>();
+            command.add("python");
+            command.add(pythonScriptPath);
+            command.add(String.valueOf(attr1));
+            command.add(String.valueOf(attr2));
+            command.add(String.valueOf(attr3));
+            command.add(String.valueOf(attr4));
+            command.add(String.valueOf(attr5));
+            command.add(String.valueOf(attr6));
+            command.add(String.valueOf(attr7));
+            command.add(String.valueOf(attr8));
+            command.add(String.valueOf(attr9));
+            command.add(String.valueOf(attr10));
+            command.add(String.valueOf(attr11));
+            command.add(String.valueOf(attr12));
+            command.add(String.valueOf(attr13));
+            command.add(String.valueOf(attr14));
+            command.add(String.valueOf(attr15));
+            command.add(String.valueOf(attr16));
+
+            ProcessBuilder pb = new ProcessBuilder(command);
+            
+            // Set working directory
+            File pythonDir = getPythonDirectory();
+            
+            if (pythonDir.exists()) {
+                pb.directory(pythonDir);
+            } else {
+                 StringBuilder output = new StringBuilder();
+                 output.append("Error: Could not find Python directory. \n");
+                 model.addAttribute("result", output.toString());
+                 return "deep/lung";
+            }
+            
+            pb.redirectErrorStream(true);
+            Process process = pb.start();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), "UTF-8"));
+            
+            String line;
+            StringBuilder output = new StringBuilder();
+            
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("예측 결과:") || line.contains("확률:")) {
+                    output.append(line).append("\n");
+                }
+            }
+            
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                output.append("Process exited with code ").append(exitCode);
+            }
+
+            model.addAttribute("result", output.toString());
+            
+            // Pass back input values
+            model.addAttribute("attr1", attr1);
+            model.addAttribute("attr2", attr2);
+            model.addAttribute("attr3", attr3);
+            model.addAttribute("attr4", attr4);
+            model.addAttribute("attr5", attr5);
+            model.addAttribute("attr6", attr6);
+            model.addAttribute("attr7", attr7);
+            model.addAttribute("attr8", attr8);
+            model.addAttribute("attr9", attr9);
+            model.addAttribute("attr10", attr10);
+            model.addAttribute("attr11", attr11);
+            model.addAttribute("attr12", attr12);
+            model.addAttribute("attr13", attr13);
+            model.addAttribute("attr14", attr14);
+            model.addAttribute("attr15", attr15);
+            model.addAttribute("attr16", attr16);
+
+        } catch (Exception e) {
+            model.addAttribute("result", "Error: " + e.getMessage());
+        }
+
+        return "deep/lung";
+    }
 }
