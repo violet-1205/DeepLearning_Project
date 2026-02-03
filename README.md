@@ -83,11 +83,9 @@ springboot/
 ## 📝 설치 및 실행 (Installation & Run)
 
 1. **Python 환경 설정**
-   - Python 3.10 설치.
-   - 필수 라이브러리 설치:
-     ```bash
-     pip install tensorflow pandas numpy scikit-learn
-     ```
+   - Python 3.10 이상 설치가 필요합니다.
+   - 필수 라이브러리는 애플리케이션 실행 시 `requirements.txt`를 통해 자동으로 설치됩니다.
+     (Spring Boot 서버 시작 시 자동 감지 및 `pip install` 수행)
 
 2. **Spring Boot 실행**
    - 프로젝트 루트에서 실행:
