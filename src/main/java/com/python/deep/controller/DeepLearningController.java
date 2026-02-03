@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import jakarta.annotation.PostConstruct;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,6 +15,58 @@ import java.util.List;
 
 @Controller
 public class DeepLearningController {
+
+    private File getPythonDirectory() {
+        String userDir = System.getProperty("user.dir");
+        File pythonDir = new File(userDir, "src/main/resources/static/python");
+        
+        if (!pythonDir.exists()) {
+             // Try inside springboot folder (if run from parent)
+             pythonDir = new File(userDir, "springboot/src/main/resources/static/python");
+        }
+        return pythonDir;
+    }
+
+    @PostConstruct
+    public void init() {
+        try {
+            File pythonDir = getPythonDirectory();
+            File requirements = new File(pythonDir, "requirements.txt");
+            
+            if (requirements.exists()) {
+                System.out.println("Installing Python dependencies from " + requirements.getAbsolutePath());
+                List<String> command = new ArrayList<>();
+                command.add("python");
+                command.add("-m");
+                command.add("pip");
+                command.add("install");
+                command.add("-r");
+                command.add("requirements.txt");
+                
+                ProcessBuilder pb = new ProcessBuilder(command);
+                pb.directory(pythonDir);
+                pb.redirectErrorStream(true);
+                Process process = pb.start();
+                
+                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), "UTF-8"));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println("[PIP] " + line);
+                }
+                
+                int exitCode = process.waitFor();
+                if (exitCode == 0) {
+                    System.out.println("Python dependencies installed successfully.");
+                } else {
+                    System.err.println("Failed to install Python dependencies. Exit code: " + exitCode);
+                }
+            } else {
+                System.out.println("No requirements.txt found in " + pythonDir.getAbsolutePath());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @GetMapping("/deep/diabetes")
     public String diabetesForm() {
@@ -49,12 +102,7 @@ public class DeepLearningController {
             ProcessBuilder pb = new ProcessBuilder(command);
             
             // Set working directory
-            String userDir = System.getProperty("user.dir");
-            File pythonDir = new File(userDir, "src/main/resources/static/python");
-            
-            if (!pythonDir.exists()) {
-                pythonDir = new File(userDir, "springboot/src/main/resources/static/python");
-            }
+            File pythonDir = getPythonDirectory();
             
             if (pythonDir.exists()) {
                 pb.directory(pythonDir);
@@ -109,8 +157,6 @@ public class DeepLearningController {
 
         try {
             // Python script path
-            // Use relative path and English filename to avoid encoding issues
-            // We will set the working directory to the python folder, so we just need the filename
             String pythonScriptPath = "diabetes_deep.py";
             
             // Prepare command arguments
@@ -128,26 +174,18 @@ public class DeepLearningController {
 
             ProcessBuilder pb = new ProcessBuilder(command);
             
-            // Set working directory to where the script is, to avoid path encoding issues
-            // Try to find the directory relative to user.dir
-            String userDir = System.getProperty("user.dir");
-            File pythonDir = new File(userDir, "src/main/resources/static/python"); // Standard structure
+            // Set working directory
+            File pythonDir = getPythonDirectory();
             
-            if (!pythonDir.exists()) {
-                // Try inside springboot folder (if run from parent)
-                pythonDir = new File(userDir, "springboot/src/main/resources/static/python");
-            }
-            
-            StringBuilder output = new StringBuilder();
-
             if (pythonDir.exists()) {
                 pb.directory(pythonDir);
             } else {
                  // Debug info if not found
+                 StringBuilder output = new StringBuilder();
                  output.append("Error: Could not find Python directory. \n");
-                 output.append("User Dir: ").append(userDir).append("\n");
-                 output.append("Tried: ").append(new File(userDir, "src/main/resources/static/python").getAbsolutePath()).append("\n");
-                 output.append("Tried: ").append(new File(userDir, "springboot/src/main/resources/static/python").getAbsolutePath()).append("\n");
+                 output.append("User Dir: ").append(System.getProperty("user.dir")).append("\n");
+                 model.addAttribute("result", output.toString());
+                 return "deep/diabetes";
             }
             
             pb.redirectErrorStream(true);
@@ -156,6 +194,7 @@ public class DeepLearningController {
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), "UTF-8")); // Changed to UTF-8
             
             String line;
+            StringBuilder output = new StringBuilder();
             
             while ((line = reader.readLine()) != null) {
                 // Filter output to show only results, hiding system logs
